@@ -1,7 +1,10 @@
 package handler
 
-import "github.com/cosmart/internal/repository"
+import (
+	entity "github.com/cosmart/internal/entities"
+)
 
 type usecaseInterface interface {
-	GetListOfBooks() (repository.OpenLibrarySubjectsResponse, error)
+	GetListOfBooks(subject string) ([]entity.Book, error)
+	SubmitBookPickupSchedule(edition string) error
 }

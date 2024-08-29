@@ -1,5 +1,7 @@
 package repository
 
+import entity "github.com/cosmart/internal/entities"
+
 // Define structs to match the JSON response
 type Availability struct {
 	Status              string  `json:"status"`
@@ -11,8 +13,6 @@ type Availability struct {
 	IsLendable          bool    `json:"is_lendable"`
 	IsPreviewable       bool    `json:"is_previewable"`
 	Identifier          string  `json:"identifier"`
-	ISBN                *string `json:"isbn"` // Pointer to handle null values
-	OCLC                *string `json:"oclc"`
 	OpenlibraryWork     string  `json:"openlibrary_work"`
 	OpenlibraryEdition  string  `json:"openlibrary_edition"`
 	LastLoanDate        *string `json:"last_loan_date"`
@@ -35,23 +35,51 @@ type Work struct {
 	CoverID           int          `json:"cover_id"`
 	CoverEditionKey   string       `json:"cover_edition_key"`
 	Subject           []string     `json:"subject"`
-	IACollection      []string     `json:"ia_collection"`
-	LendingLibrary    bool         `json:"lendinglibrary"`
-	PrintDisabled     bool         `json:"printdisabled"`
 	LendingEdition    string       `json:"lending_edition"`
 	LendingIdentifier string       `json:"lending_identifier"`
 	Authors           []Author     `json:"authors"`
 	FirstPublishYear  int          `json:"first_publish_year"`
-	IA                string       `json:"ia"`
-	PublicScan        bool         `json:"public_scan"`
 	HasFulltext       bool         `json:"has_fulltext"`
 	Availability      Availability `json:"availability"`
 }
 
-type OpenLibrarySubjectsResponse struct {
+type WorksResponse struct {
 	Key         string `json:"key"`
 	Name        string `json:"name"`
 	SubjectType string `json:"subject_type"`
 	WorkCount   int    `json:"work_count"`
 	Works       []Work `json:"works"`
+}
+
+type BooksResponse struct {
+	NumFound int               `json:"numFound"`
+	Docs     []DocsInformation `json:"docs"`
+}
+
+type DocsInformation struct {
+	AuthorNames  []string `json:"author_name"`
+	EditionCount int      `json:"edition_count"`
+	Key          string   `json:"key"`
+}
+
+func convertWorksResponseToBooks(works WorksResponse) []entity.Book {
+	books := make([]entity.Book, len(works.Works))
+	for idx, work := range works.Works {
+		books[idx] = entity.Book{
+			Title:      work.Title,
+			Authors:    convertWorksResponseAuthorsToAuthorSlice(work.Authors),
+			EditionKey: work.Key,
+		}
+	}
+
+	return books
+}
+
+func convertWorksResponseAuthorsToAuthorSlice(authors []Author) []string {
+	authorList := make([]string, len(authors))
+	for idx, val := range authors {
+		authorList[idx] = val.Name
+	}
+
+	return authorList
 }

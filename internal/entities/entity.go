@@ -1,14 +1,17 @@
 package entities
 
-/* type Books struct {
+type Book struct {
+	Title      string
+	Authors    []string
+	EditionKey string
 }
 
 type PickupSchedules struct {
 	Schedules []BookInformation
 }
-*/
-/* type BookInformation struct {
-	Title
-	Author
-	EditionNumber
-} */
+
+type BookInformation struct {
+	Title   string
+	Authors []string
+	Edition string
+}
