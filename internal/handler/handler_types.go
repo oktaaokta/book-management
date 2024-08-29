@@ -1,8 +1,9 @@
 package handler
 
+import "time"
+
 type Response struct {
 	Message string            `json:"message"`
-	Status  int               `json:"status"`
 	Books   []BookInformation `json:"books"`
 }
 
@@ -13,5 +14,7 @@ type BookInformation struct {
 }
 
 type PickupScheduleReq struct {
-	Edition string `json:"edition"`
+	Edition    string    `json:"edition"`
+	PickupDate time.Time `json:"pickup_date"`
+	ReturnDate time.Time `json:"return_date"`
 }
