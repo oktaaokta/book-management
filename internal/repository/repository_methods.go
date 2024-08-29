@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	entity "github.com/cosmart/internal/entities"
 	"github.com/cosmart/internal/infrastructure"
@@ -30,8 +31,8 @@ func (r *Repository) GetBooksBySubjectFromRepo(subject string) ([]entity.Book, e
 	return convertWorksResponseToBooks(workResponse), nil
 }
 
-func (r *Repository) GetBooksByParamFromRepo() (BooksResponse, error) {
-	response, err := http.Get(openLibraryAPI + "/search.json?q=the+lord+of+the+rings&fields=key,title,author_name,editions")
+func (r *Repository) GetWorkByEdition(edition string) (BooksResponse, error) {
+	response, err := http.Get(openLibraryAPI + "/works/" + edition + ".json")
 	if err != nil {
 		return BooksResponse{}, err
 	}
@@ -51,6 +52,6 @@ func (r *Repository) GetPickupSchedulesByEdition(edition string) infrastructure.
 	return r.ps.GetPickupSchedules(edition)
 }
 
-func (r *Repository) SetPickupSchedulesByEdition(edition string) {
-	r.ps.SetPickupSchedules(edition)
+func (r *Repository) SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time) {
+	r.ps.SetPickupSchedules(edition, pickupDate, returnDate)
 }

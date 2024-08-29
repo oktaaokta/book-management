@@ -52,8 +52,9 @@ type WorksResponse struct {
 }
 
 type BooksResponse struct {
-	NumFound int               `json:"numFound"`
-	Docs     []DocsInformation `json:"docs"`
+	Title string `json:"title"`
+	//Authors []string `json:"title"`
+	Error string `json:"error"`
 }
 
 type DocsInformation struct {

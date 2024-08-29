@@ -4,7 +4,7 @@ import "time"
 
 type Response struct {
 	Message string            `json:"message"`
-	Books   []BookInformation `json:"books"`
+	Books   []BookInformation `json:"books,omitempty"`
 }
 
 type BookInformation struct {

@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"time"
+
 	entity "github.com/cosmart/internal/entities"
 	"github.com/cosmart/internal/infrastructure"
 	repo "github.com/cosmart/internal/repository"
@@ -8,10 +10,10 @@ import (
 
 type repositoryInterface interface {
 	// Books methods
-	GetBooksByParamFromRepo() (repo.BooksResponse, error)
+	GetWorkByEdition(edition string) (repo.BooksResponse, error)
 	GetBooksBySubjectFromRepo(subject string) ([]entity.Book, error)
 
 	// Pickup schedule methods
 	GetPickupSchedulesByEdition(edition string) infrastructure.ScheduleInformation
-	SetPickupSchedulesByEdition(edition string)
+	SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time)
 }

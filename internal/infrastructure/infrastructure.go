@@ -24,5 +24,7 @@ type BookInformation struct {
 }
 
 func NewPickupSchedules() *PickupSchedules {
-	return &PickupSchedules{}
+	return &PickupSchedules{
+		Info: make(map[string]ScheduleInformation),
+	}
 }

@@ -50,21 +50,22 @@ func (hd *Handler) SubmitBookPickupSchedule(w http.ResponseWriter, r *http.Reque
 	}
 	defer r.Body.Close()
 
-	var requestData PickupScheduleReq
+	var request PickupScheduleReq
 
 	// Unmarshal the JSON body into the struct
-	if err := json.Unmarshal(body, &requestData); err != nil {
+	if err := json.Unmarshal(body, &request); err != nil {
+		log.Println("error when parsing request body: ", err)
 		writeResponse(w, Response{Message: "error parsing request body"}, http.StatusBadRequest)
 		return
 	}
 
-	valid, message := validatePickupSchedule(requestData)
+	valid, message := validatePickupSchedule(request)
 	if !valid {
 		writeResponse(w, Response{Message: message}, http.StatusBadRequest)
 		return
 	}
 
-	err = hd.uc.SubmitBookPickupSchedule(requestData.Edition, requestData.PickupDate, requestData.ReturnDate)
+	err = hd.uc.SubmitBookPickupSchedule(request.Edition, request.PickupDate, request.ReturnDate)
 	if err != nil {
 		response := Response{
 			Message: "Book pickup schedule failed due to: " + err.Error(),
