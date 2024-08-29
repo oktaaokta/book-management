@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 )
 
 func (hd *Handler) GetBooksList(w http.ResponseWriter, r *http.Request) {
@@ -57,13 +58,13 @@ func (hd *Handler) SubmitBookPickupSchedule(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// validate input
-	if requestData.Edition == "" || requestData.PickupDate.IsZero() || requestData.ReturnDate.IsZero() {
-		writeResponse(w, Response{Message: "missing parameter in body"}, http.StatusBadRequest)
+	valid, message := validatePickupSchedule(requestData)
+	if !valid {
+		writeResponse(w, Response{Message: message}, http.StatusBadRequest)
 		return
 	}
 
-	err = hd.uc.SubmitBookPickupSchedule(requestData.Edition)
+	err = hd.uc.SubmitBookPickupSchedule(requestData.Edition, requestData.PickupDate, requestData.ReturnDate)
 	if err != nil {
 		response := Response{
 			Message: "Book pickup schedule failed due to: " + err.Error(),
@@ -89,4 +90,20 @@ func writeResponse(w http.ResponseWriter, resp Response, statusCode int) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		log.Println("Error when writing response: ", err)
 	}
+}
+
+func validatePickupSchedule(req PickupScheduleReq) (bool, string) {
+	if req.Edition == "" {
+		return false, "missing edition in parameter"
+	}
+
+	if req.PickupDate.Before(time.Now()) {
+		return false, "pickup date cannot be before current date"
+	}
+
+	if req.ReturnDate.Before(req.PickupDate) {
+		return false, "return date cannot be before pickup date"
+	}
+
+	return true, ""
 }

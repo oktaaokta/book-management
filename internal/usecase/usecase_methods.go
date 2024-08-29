@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
+	"time"
 
 	entity "github.com/cosmart/internal/entities"
 )
@@ -15,10 +17,11 @@ func (uc *Usecase) GetListOfBooks(subject string) ([]entity.Book, error) {
 	return resp, nil
 }
 
-func (uc *Usecase) SubmitBookPickupSchedule(edition string) error {
+func (uc *Usecase) SubmitBookPickupSchedule(edition string, pickupDate, returnDate time.Time) error {
 	schedule := uc.repo.GetPickupSchedulesByEdition(edition)
-	if len(schedule.Schedules) != 0 && !schedule.LastWaitlistDate.IsZero() {
-
+	if len(schedule.Schedules) != 0 && schedule.LastWaitlistDate.Before(pickupDate) {
+		message := fmt.Sprintf("book is not available during the pickup time. The book will be available at: %v", schedule.LastWaitlistDate)
+		return errors.New(message)
 	}
 
 	booksResponse, err := uc.repo.GetBooksByParamFromRepo()
