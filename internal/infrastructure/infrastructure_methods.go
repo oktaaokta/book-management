@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"fmt"
 	"time"
 )
 
