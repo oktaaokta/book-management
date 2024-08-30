@@ -8,6 +8,8 @@ import (
 	repo "github.com/cosmart/internal/repository"
 )
 
+//go:generate mockgen -build_flags=--mod=mod -package=usecase -destination=usecase_deps_mock_test.go -source=usecase_deps.go
+
 type repositoryInterface interface {
 	// Books methods
 	GetWorkByEdition(edition string) (repo.BooksResponse, error)
