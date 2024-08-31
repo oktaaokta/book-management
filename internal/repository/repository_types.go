@@ -1,6 +1,10 @@
 package repository
 
-import entity "github.com/cosmart/internal/entities"
+import (
+	"strings"
+
+	entity "github.com/cosmart/internal/entities"
+)
 
 // Define structs to match the JSON response
 type Availability struct {
@@ -87,4 +91,26 @@ func convertWorksResponseAuthorsToAuthorSlice(authors []Author) []string {
 	}
 
 	return authorList
+}
+
+func convertBooksResponseAuthorsToEntity(book BooksResponse, edition string) entity.BookInformation {
+	return entity.BookInformation{
+		Title:   book.Title,
+		Edition: edition,
+		Authors: convertBooksResponseAuthorsToEntityAuthorsSlice(book.Authors),
+	}
+}
+
+func convertBooksResponseAuthorsToEntityAuthorsSlice(authors []AuthorsBooksResponse) []string {
+	listAuthors := make([]string, len(authors))
+
+	for idx, author := range authors {
+		split := strings.Split(author.Author.Key, "/")
+		if len(split) > 2 {
+			listAuthors[idx] = split[2]
+		}
+	}
+
+	return listAuthors
+
 }

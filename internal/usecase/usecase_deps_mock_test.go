@@ -15,7 +15,6 @@ import (
 
 	entities "github.com/cosmart/internal/entities"
 	infrastructure "github.com/cosmart/internal/infrastructure"
-	repository "github.com/cosmart/internal/repository"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -72,10 +71,10 @@ func (mr *MockrepositoryInterfaceMockRecorder) GetPickupSchedulesByEdition(editi
 }
 
 // GetWorkByEdition mocks base method.
-func (m *MockrepositoryInterface) GetWorkByEdition(edition string) (repository.BooksResponse, error) {
+func (m *MockrepositoryInterface) GetWorkByEdition(edition string) (entities.BookInformation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetWorkByEdition", edition)
-	ret0, _ := ret[0].(repository.BooksResponse)
+	ret0, _ := ret[0].(entities.BookInformation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

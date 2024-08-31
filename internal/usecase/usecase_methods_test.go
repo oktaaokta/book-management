@@ -8,7 +8,6 @@ import (
 
 	entity "github.com/cosmart/internal/entities"
 	"github.com/cosmart/internal/infrastructure"
-	"github.com/cosmart/internal/repository"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -143,7 +142,7 @@ func TestUsecase_SubmitBookPickupSchedule(t *testing.T) {
 					},
 					LastWaitlistDate: mockTime.AddDate(0, 0, 2),
 				})
-				mu.repo.EXPECT().GetWorkByEdition("science").Return(repository.BooksResponse{}, assert.AnError)
+				mu.repo.EXPECT().GetWorkByEdition("science").Return(entity.BookInformation{}, assert.AnError)
 			},
 			wantErr: true,
 		},
@@ -162,36 +161,9 @@ func TestUsecase_SubmitBookPickupSchedule(t *testing.T) {
 					},
 					LastWaitlistDate: mockTime.AddDate(0, 0, 2),
 				})
-				mu.repo.EXPECT().GetWorkByEdition("science").Return(repository.BooksResponse{
-					Error: "no books found",
-				}, nil)
-			},
-			wantErr: true,
-		},
-		{
-			name:       "case no books found when getting work then return error",
-			subject:    "science",
-			pickupDate: mockTime.AddDate(0, 0, 3),
-			returnDate: mockTime.AddDate(0, 0, 4),
-			mockFn: func(mu *mockUsecase) {
-				mu.repo.EXPECT().GetPickupSchedulesByEdition("science").Return(infrastructure.ScheduleInformation{
-					Schedules: []infrastructure.Schedule{
-						{
-							PickupDate: mockTime.AddDate(0, 0, 1),
-							ReturnDate: mockTime.AddDate(0, 0, 2),
-						},
-					},
-					LastWaitlistDate: mockTime.AddDate(0, 0, 2),
-				})
-				mu.repo.EXPECT().GetWorkByEdition("science").Return(repository.BooksResponse{
-					Title: "Cat in the hat",
-					Authors: []repository.AuthorsBooksResponse{
-						{
-							Author: repository.Author{
-								Key: "Dr. Seuss",
-							},
-						},
-					},
+				mu.repo.EXPECT().GetWorkByEdition("science").Return(entity.BookInformation{
+					Title:   "Cat in the hat",
+					Authors: []string{"Dr. Seuss"},
 				}, nil)
 				mu.repo.EXPECT().SetPickupSchedulesByEdition("science", mockTime.AddDate(0, 0, 3), mockTime.AddDate(0, 0, 4), entity.BookInformation{
 					Title:   "Cat in the hat",

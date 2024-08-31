@@ -2,6 +2,7 @@ package repository
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"time"
@@ -31,10 +32,10 @@ func (r *Repository) GetBooksBySubjectFromRepo(subject string) ([]entity.Book, e
 	return convertWorksResponseToBooks(workResponse), nil
 }
 
-func (r *Repository) GetWorkByEdition(edition string) (BooksResponse, error) {
+func (r *Repository) GetWorkByEdition(edition string) (entity.BookInformation, error) {
 	response, err := http.Get(openLibraryAPI + "/works/" + edition + ".json")
 	if err != nil {
-		return BooksResponse{}, err
+		return entity.BookInformation{}, err
 	}
 	defer response.Body.Close()
 
@@ -44,7 +45,11 @@ func (r *Repository) GetWorkByEdition(edition string) (BooksResponse, error) {
 		log.Fatalf("Failed to decode JSON response: %v", err)
 	}
 
-	return booksResponse, nil
+	if booksResponse.Error != "" {
+		return entity.BookInformation{}, errors.New(booksResponse.Error)
+	}
+
+	return convertBooksResponseAuthorsToEntity(booksResponse, edition), nil
 }
 
 // GetPickupSchedulesByEdition retrieves book pickup schedule by given edition.
