@@ -2,6 +2,8 @@ package infrastructure
 
 import (
 	"time"
+
+	entity "github.com/cosmart/internal/entities"
 )
 
 func (ps *PickupSchedules) GetPickupSchedules(edition string) ScheduleInformation {
@@ -12,7 +14,7 @@ func (ps *PickupSchedules) GetPickupSchedules(edition string) ScheduleInformatio
 	return ScheduleInformation{}
 }
 
-func (ps *PickupSchedules) SetPickupSchedules(edition string, pickupDate, returnDate time.Time) {
+func (ps *PickupSchedules) SetPickupSchedules(edition string, pickupDate, returnDate time.Time, bookInfo entity.BookInformation) {
 	schedule, exists := ps.Info[edition]
 	if !exists {
 		var scheduleInfo ScheduleInformation
@@ -23,6 +25,11 @@ func (ps *PickupSchedules) SetPickupSchedules(edition string, pickupDate, return
 			},
 		}
 		scheduleInfo.LastWaitlistDate = returnDate
+		scheduleInfo.Book = BookInformation{
+			Title:   bookInfo.Title,
+			Edition: bookInfo.Edition,
+			Authors: bookInfo.Authors,
+		}
 		ps.Info[edition] = scheduleInfo
 		return
 	}

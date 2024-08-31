@@ -30,18 +30,29 @@ The request payload should be a JSON object with the following structure:
 }
 ```
 
+## Prerequisites
+
+Before running the application, make sure you have the following installed:
+
+Go Programming Language (Golang): The application is built using Go. You need to have Go installed on your system to build and run the application.
+You can download and install Go from the official Go website. Follow the installation instructions provided there for your specific operating system.
+
+After installing Go, ensure it's properly set up by running:
+ ```
+go version
+```
+
 ## Running the Application
 
 To run the Book Management API on a Linux system, follow these steps:
 
 1. **Clone the Repository:**
 
-   ```bash
+   ```
    git clone https://github.com/oktaaokta/book-management.git
-   cd book-management
    ```
 2. **Run the Service:**
-    After the 
+    You may run the service by using the command below.
     ```
     make run
     ```

@@ -52,9 +52,13 @@ type WorksResponse struct {
 }
 
 type BooksResponse struct {
-	Title string `json:"title"`
-	//Authors []string `json:"title"`
-	Error string `json:"error"`
+	Title   string                 `json:"title"`
+	Authors []AuthorsBooksResponse `json:"authors"`
+	Error   string                 `json:"error"`
+}
+
+type AuthorsBooksResponse struct {
+	Author Author `json:"author"`
 }
 
 type DocsInformation struct {

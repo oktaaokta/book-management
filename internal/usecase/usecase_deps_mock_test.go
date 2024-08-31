@@ -87,13 +87,13 @@ func (mr *MockrepositoryInterfaceMockRecorder) GetWorkByEdition(edition any) *go
 }
 
 // SetPickupSchedulesByEdition mocks base method.
-func (m *MockrepositoryInterface) SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time) {
+func (m *MockrepositoryInterface) SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time, bookInfo entities.BookInformation) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SetPickupSchedulesByEdition", edition, pickupDate, returnDate)
+	m.ctrl.Call(m, "SetPickupSchedulesByEdition", edition, pickupDate, returnDate, bookInfo)
 }
 
 // SetPickupSchedulesByEdition indicates an expected call of SetPickupSchedulesByEdition.
-func (mr *MockrepositoryInterfaceMockRecorder) SetPickupSchedulesByEdition(edition, pickupDate, returnDate any) *gomock.Call {
+func (mr *MockrepositoryInterfaceMockRecorder) SetPickupSchedulesByEdition(edition, pickupDate, returnDate, bookInfo any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPickupSchedulesByEdition", reflect.TypeOf((*MockrepositoryInterface)(nil).SetPickupSchedulesByEdition), edition, pickupDate, returnDate)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPickupSchedulesByEdition", reflect.TypeOf((*MockrepositoryInterface)(nil).SetPickupSchedulesByEdition), edition, pickupDate, returnDate, bookInfo)
 }

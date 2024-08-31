@@ -17,5 +17,5 @@ type repositoryInterface interface {
 
 	// Pickup schedule methods
 	GetPickupSchedulesByEdition(edition string) infrastructure.ScheduleInformation
-	SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time)
+	SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time, bookInfo entity.BookInformation)
 }

@@ -52,6 +52,6 @@ func (r *Repository) GetPickupSchedulesByEdition(edition string) infrastructure.
 	return r.ps.GetPickupSchedules(edition)
 }
 
-func (r *Repository) SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time) {
-	r.ps.SetPickupSchedules(edition, pickupDate, returnDate)
+func (r *Repository) SetPickupSchedulesByEdition(edition string, pickupDate, returnDate time.Time, bookInfo entity.BookInformation) {
+	r.ps.SetPickupSchedules(edition, pickupDate, returnDate, bookInfo)
 }

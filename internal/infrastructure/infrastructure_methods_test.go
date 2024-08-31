@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	entity "github.com/cosmart/internal/entities"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -86,19 +87,30 @@ func TestUsecase_GetPickupSchedules(t *testing.T) {
 }
 
 func TestUsecase_SetPickupSchedules(t *testing.T) {
-	tests := []struct {
-		name       string
+	type args struct {
 		edition    string
 		pickupDate time.Time
 		returnDate time.Time
-		mockFn     func(*mockPs)
-		want       ScheduleInformation
+		bookInfo   entity.BookInformation
+	}
+	tests := []struct {
+		name   string
+		args   args
+		mockFn func(*mockPs)
+		want   ScheduleInformation
 	}{
 		{
-			name:       "then add new schedule",
-			edition:    "fiction",
-			pickupDate: mockTime.AddDate(0, 0, 1),
-			returnDate: mockTime.AddDate(0, 0, 2),
+			name: "schedule is empty, then add new schedule",
+			args: args{
+				edition:    "fiction",
+				pickupDate: mockTime.AddDate(0, 0, 1),
+				returnDate: mockTime.AddDate(0, 0, 2),
+				bookInfo: entity.BookInformation{
+					Title:   "cat in the hat",
+					Authors: []string{"Dr. Seuss"},
+					Edition: "1",
+				},
+			},
 			want: ScheduleInformation{
 				Schedules: []Schedule{
 					{
@@ -107,13 +119,21 @@ func TestUsecase_SetPickupSchedules(t *testing.T) {
 					},
 				},
 				LastWaitlistDate: mockTime.AddDate(0, 0, 2),
+				Book: BookInformation{
+					Title:   "cat in the hat",
+					Authors: []string{"Dr. Seuss"},
+					Edition: "1",
+				},
 			},
 		},
 		{
-			name:       "schedule is already available, append new one and update last waitlist date",
-			edition:    "science",
-			pickupDate: mockTime.AddDate(0, 0, 3),
-			returnDate: mockTime.AddDate(0, 0, 5),
+			name: "schedule is already available, append new one and update last waitlist date",
+			args: args{
+				edition:    "science",
+				pickupDate: mockTime.AddDate(0, 0, 3),
+				returnDate: mockTime.AddDate(0, 0, 5),
+				bookInfo:   entity.BookInformation{},
+			},
 			want: ScheduleInformation{
 				Schedules: []Schedule{
 					{
@@ -137,8 +157,8 @@ func TestUsecase_SetPickupSchedules(t *testing.T) {
 			pickup := newMockPickupSchedule()
 			ps := pickup.toPickupSchedules()
 
-			ps.SetPickupSchedules(tt.edition, tt.pickupDate, tt.returnDate)
-			got := ps.Info[tt.edition]
+			ps.SetPickupSchedules(tt.args.edition, tt.args.pickupDate, tt.args.returnDate, tt.args.bookInfo)
+			got := ps.Info[tt.args.edition]
 			if !reflect.DeepEqual(got, tt.want) {
 				assert.Equal(t, tt.want, got, tt.name)
 			}

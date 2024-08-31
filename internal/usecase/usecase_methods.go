@@ -3,9 +3,11 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	entity "github.com/cosmart/internal/entities"
+	"github.com/cosmart/internal/repository"
 )
 
 func (uc *Usecase) GetListOfBooks(subject string) ([]entity.Book, error) {
@@ -33,7 +35,23 @@ func (uc *Usecase) SubmitBookPickupSchedule(edition string, pickupDate, returnDa
 		return errors.New(booksResponse.Error)
 	}
 
-	uc.repo.SetPickupSchedulesByEdition(edition, pickupDate, returnDate)
+	uc.repo.SetPickupSchedulesByEdition(edition, pickupDate, returnDate, entity.BookInformation{
+		Title:   booksResponse.Title,
+		Authors: convertBooksResponseAuthorsToEntity(booksResponse.Authors),
+	})
 
 	return nil
+}
+
+func convertBooksResponseAuthorsToEntity(authors []repository.AuthorsBooksResponse) []string {
+	listAuthors := make([]string, len(authors))
+
+	for idx, author := range authors {
+		split := strings.Split(author.Author.Key, "/")
+		if len(split) > 2 {
+			listAuthors[idx] = split[2]
+		}
+	}
+
+	return listAuthors
 }
